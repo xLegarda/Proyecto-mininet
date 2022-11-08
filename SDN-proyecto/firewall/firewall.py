@@ -162,9 +162,9 @@ class Firewall(object):
         self.connection.send(msg)# Envia el mensaje a el switch OpenFlow 
     self.macToPort[packet.src] = event.port # 1
 
-    # Get the DPID of the Switch Connection
+
     dpidstr = dpid_to_str(event.connection.dpid)
-    #log.debug("Connection ID: %s" % dpidstr)
+    #log.debug("Conexion ID: %s" % dpidstr)
 
     if isinstance(packet.next, ipv4):
       log.debug("%i IP %s => %s , in switch %s", inport, packet.next.srcip,packet.next.dstip,dpidstr)
@@ -172,7 +172,7 @@ class Firewall(object):
       if segmant is None:
         segmant = packet.find('udp')
       if segmant is not None:
-        # Check the Firewall Rules in MAC, IPv4 and TCP Layer
+        # Cheque reglas Firewall en MAC, IPv4 and TCP Layer
         if self.CheckRule(dpidstr, packet.src, packet.next.srcip, packet.next.dstip, segmant.dstport) == True:
           drop()
           return
@@ -182,14 +182,14 @@ class Firewall(object):
           drop()
           return
     elif isinstance(packet.next, arp):
-      # Check the Firewall Rules in MAC Layer
+      # Chequea las reglas Firewall en MAC Layer
       if self.CheckRule(dpidstr, packet.src, 0, 0, 0) == True:
         drop()
         return
       a = packet.next
       log.debug("%i ARP %s %s => %s", inport, {arp.REQUEST:"request",arp.REPLY:"reply"}.get(a.opcode, 'op:%i' % (a.opcode,)), str(a.protosrc), str(a.protodst))
     elif isinstance(packet.next, ipv6):
-      # Do not handle ipv6 packets
+      # no maneja paquetes ipv6 ipv6 
       return
 
     if not self.transparent: # 2
